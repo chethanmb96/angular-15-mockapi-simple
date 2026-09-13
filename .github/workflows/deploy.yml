@@ -36,7 +36,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./dist/angular-15-bootstrap-mockapi
+          path: ./dist/angular-15-mockapi-simple
 
   deploy:
     environment:

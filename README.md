@@ -1,6 +1,6 @@
 # Angular 15 - MockAPI Simple
 
-A lightweight, simplified Angular 15 CRUD application connected to MockAPI.io, styled with clean Bootstrap without custom CSS bloat.
+A lightweight, simplified Angular 15 application connected to MockAPI.io, styled with clean Bootstrap without custom CSS bloat.
 
 ## Features
 - **Pure Bootstrap Styling**: No custom CSS overhead, minimal templates.
