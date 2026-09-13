@@ -1,0 +1,113 @@
+<!-- Navigation Bar -->
+<nav class="navbar navbar-expand-lg bg-light border-bottom mb-4">
+  <div class="container">
+    <span class="navbar-brand fw-bold">MockAPI Contacts</span>
+
+    <div class="d-flex align-items-center gap-2 ms-auto">
+      <input
+        type="text"
+        class="form-control form-control-sm"
+        placeholder="Search contacts..."
+        [(ngModel)]="searchTerm"
+      />
+      <button *ngIf="searchTerm" class="btn btn-sm btn-outline-secondary" (click)="searchTerm = ''">Clear</button>
+      <button class="btn btn-sm btn-outline-secondary" (click)="loadItems()" [disabled]="isLoading">Refresh</button>
+      <button class="btn btn-sm btn-primary text-nowrap" (click)="openModal()">+ New Contact</button>
+    </div>
+  </div>
+</nav>
+
+<!-- Main Content Area -->
+<div class="container">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status"></div>
+    <p class="text-muted mt-2">Loading contacts...</p>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && filteredItems.length === 0" class="alert alert-info text-center py-4">
+    No contacts found.
+    <button *ngIf="searchTerm" class="btn btn-link btn-sm p-0 ms-2" (click)="searchTerm = ''">Clear Search</button>
+  </div>
+
+  <!-- Contacts Table -->
+  <div *ngIf="!isLoading && filteredItems.length > 0" class="table-responsive border rounded bg-white shadow-sm">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Department</th>
+          <th>Status</th>
+          <th class="text-end pe-3">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of filteredItems">
+          <td class="text-muted fw-bold">{{ item.id }}</td>
+          <td class="fw-semibold">{{ item.name }}</td>
+          <td>{{ item.email }}</td>
+          <td>{{ item.role || '—' }}</td>
+          <td>{{ item.department || '—' }}</td>
+          <td>
+            <span class="badge bg-secondary">{{ item.status || 'Active' }}</span>
+          </td>
+          <td class="text-end pe-3">
+            <button class="btn btn-sm btn-outline-primary me-2" (click)="openModal(item)">Edit</button>
+            <button class="btn btn-sm btn-outline-danger" (click)="deleteItem(item)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Modal Dialog (Create & Edit) -->
+<div *ngIf="isModalOpen">
+  <div class="modal show d-block" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content shadow">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ formData.id ? 'Edit Contact #' + formData.id : 'New Contact' }}</h5>
+          <button type="button" class="btn-close" (click)="closeModal()"></button>
+        </div>
+        <form (ngSubmit)="saveItem()">
+          <div class="modal-body d-flex flex-column gap-3">
+            <div>
+              <label class="form-label small fw-bold">Full Name *</label>
+              <input type="text" name="name" class="form-control" [(ngModel)]="formData.name" required />
+            </div>
+            <div>
+              <label class="form-label small fw-bold">Email *</label>
+              <input type="email" name="email" class="form-control" [(ngModel)]="formData.email" required />
+            </div>
+            <div class="row g-2">
+              <div class="col-6">
+                <label class="form-label small fw-bold">Role</label>
+                <input type="text" name="role" class="form-control" [(ngModel)]="formData.role" />
+              </div>
+              <div class="col-6">
+                <label class="form-label small fw-bold">Department</label>
+                <input type="text" name="department" class="form-control" [(ngModel)]="formData.department" />
+              </div>
+            </div>
+            <div>
+              <label class="form-label small fw-bold">Status</label>
+              <input type="text" name="status" class="form-control" [(ngModel)]="formData.status" />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancel</button>
+            <button type="submit" class="btn btn-primary" [disabled]="!formData.name.trim() || !formData.email.trim()">
+              {{ formData.id ? 'Save Changes' : 'Create Contact' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="modal-backdrop fade show"></div>
+</div>
